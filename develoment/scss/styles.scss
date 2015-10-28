@@ -1,5 +1,23 @@
-@import url(http://fonts.googleapis.com/css?family=Raleway:400,700,300);
 $font-family-base: 'Raleway', sans-serif;
+$icon-font-path: "../fonts/";
 // Import bootstrap and fontawesome
 @import "bootstrap";
 @import "font-awesome";
+
+@media screen and (min-width: 768px){
+	.jumbotron {
+		padding-top: 12px;
+		padding-bottom: 12px;
+	}
+}
+
+.btn-fixed {
+	position: fixed;
+	bottom: 50px;
+	right: 50px;
+}
+
+.logo{
+	width: 150px;
+	height: auto;
+}

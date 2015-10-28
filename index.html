@@ -5,7 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-		<title>Bootstrap 101 Template</title>
+		<title>Health Tracker</title>
 
 		<!-- Bootstrap -->
 		<link href="assets/css/styles.css" rel="stylesheet">
@@ -18,7 +18,68 @@
 <![endif]-->
 	</head>
 	<body>
-		
+		<div class="jumbotron">
+			<div class="container">
+				<img class="pull-left logo" src="assets/images/logo-placeholder.jpg" alt="logo">
+				<h1 class="pull-right">Health Tracker</h1> 
+			</div>
+		</div>
+		<section class="container">
+			<div class="row">
+				<div class="col-xs-10 col-xs-offset-1">
+					<div>
+						<!-- Nav tabs -->
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="presentation" class="active">
+								<a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+									My Food Diary
+								</a>
+							</li>
+							<li role="presentation">
+								<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+								Profile
+								</a>
+							</li>
+							<li role="presentation">
+								<a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+									Messages
+								</a>
+							</li>
+						</ul>
+
+						<!-- Tab panes -->
+						<div class="tab-content">
+							<div role="tabpanel" class="tab-pane active" id="home">
+								
+							</div>
+							<div role="tabpanel" class="tab-pane" id="profile">...</div>
+							<div role="tabpanel" class="tab-pane" id="messages">...</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>	
+		<script type="text/template">
+						
+		</script>
+		<div class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Modal title</h4>
+					</div>
+					<div class="modal-body">
+						<p>One fine body&hellip;</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save changes</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
 		<script src="assets/js/app.js"></script>
 	</body>
 </html>

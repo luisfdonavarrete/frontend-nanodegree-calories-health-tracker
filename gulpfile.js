@@ -19,7 +19,10 @@ gulp.task("bower", function() {
 
 /* Copy the fonts file from fontawesome to the assets directory */
 gulp.task("icons", function() {
-	return gulp.src(config.bowerDir + "/font-awesome/fonts/**.*")
+	return gulp.src([
+		config.bowerDir + "/bootstrap-sass/assets/fonts/bootstrap/**.*", 
+			config.bowerDir + "/font-awesome/fonts/**.*"
+		])
 		.pipe(gulp.dest(config.dest + "/fonts"));
 });
 
