@@ -4,7 +4,8 @@ var gulp = require("gulp"),
     bower = require("gulp-bower"),
     concat = require("gulp-concat"),
     uglify = require("gulp-uglify"),
-    gulpif =  require("gulp-if");
+    gulpif =  require("gulp-if"),
+    connect =  require("gulp-connect");
 
 var env = process.env.NODE_ENV  || "development"; 
 
@@ -29,6 +30,13 @@ gulp.task("icons", function() {
 		.pipe(gulp.dest(config.dest + "/fonts"));
 });
 
+/* Copy the inde.html file to the the production forder */
+gulp.task("html", function(){
+	return gulp.src("./development/index.html")
+		.pipe(gulp.dest("./"))
+		.pipe(connect.reload());
+});
+
 /* Complie cssc to a css file */
 gulp.task('css', function() {
 	return sass(config.sassPath + '/styles.scss', {
@@ -42,7 +50,8 @@ gulp.task('css', function() {
 	.on("error", notify.onError(function (error) {
 		return "Error: " + error.message;
 	}))
-	.pipe(gulp.dest(config.dest + "/css"));
+	.pipe(gulp.dest(config.dest + "/css"))
+	.pipe(connect.reload());
 });
 
 /* Concat, minify javascript files */
@@ -50,14 +59,23 @@ gulp.task("js",function(){
 	return gulp.src([config.bowerDir + "/jquery/dist/jquery.js", "./develoment/js/**/*.js"])
 		.pipe(concat("app.js"))
 		.pipe(gulpif(env === "production", uglify()))
-		.pipe(gulp.dest(config.dest + "/js"));
+		.pipe(gulp.dest(config.dest + "/js"))
+		.pipe(connect.reload());
 });
 
 /* Watch task: run the specified task(s) when some file(s) change*/
 gulp.task("watch", function(){
-	gulp.watch("development/scss/*.scss", ["css"]);
-	gulp.watch("development/js/**/*.js", ["js"]);
+	gulp.watch("./development/scss/*.scss", ["css"]);
+	gulp.watch("./development/js/**/*.js", ["js"]);
+	gulp.watch("./development/index.html", ["html"]);
+});
+
+gulp.task("connect", function(){
+	connect.server({
+		port: 3000,
+		livereload: true
+	});
 });
 
 /* Define the default task */
-gulp.task("default", ["icons", "css", "js", "watch"]);
+gulp.task("default", ["html", "icons", "css", "js", "connect", "watch"]);

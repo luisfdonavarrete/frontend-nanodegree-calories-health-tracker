@@ -9208,12 +9208,3 @@ if ( typeof noGlobal === strundefined ) {
 return jQuery;
 
 }));
-
-console.log("app loaded");
-console.log("collectionLoaded");
-console.log("Model 1 Loaded");
-console.log("model 2 Loaded");
-console.log("reouter Loaded");
-console.log("view 1 loaded");
-console.log("view 2 loaded");
-console.log("view 3 loaded");
