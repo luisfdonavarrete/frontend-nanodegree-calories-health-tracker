@@ -3,7 +3,10 @@ var gulp = require("gulp"),
     notify = require("gulp-notify"),
     bower = require("gulp-bower"),
     concat = require("gulp-concat"),
-    uglify = require("gulp-uglify");
+    uglify = require("gulp-uglify"),
+    gulpif =  require("gulp-if");
+
+var env = process.env.NODE_ENV  || "development"; 
 
 var config = {
 	sassPath: "./develoment/scss",
@@ -44,7 +47,8 @@ gulp.task('css', function() {
 
 /* Concat, minify javascript files */
 gulp.task("js",function(){
-	return gulp.src([config.bowerDir + "jquery/dist/jquery.js", "./develoment/js/*", "app.js"])
-		.pipe(uglify())
+	return gulp.src([config.bowerDir + "/jquery/dist/jquery.js", "./develoment/js/**/*.js"])
+		.pipe(concat("app.js"))
+		.pipe(gulpif(env === "production", uglify()))
 		.pipe(gulp.dest(config.dest + "/js"));
 });
