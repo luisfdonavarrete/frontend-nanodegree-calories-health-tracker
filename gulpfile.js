@@ -43,8 +43,8 @@ gulp.task('css', function() {
 });
 
 /* Concat, minify javascript files */
-gulp.task("scripts",function(){
-	return gulp.src([config.bowerDir + "jquery/dist/jquery.js", "./develoment/js/*"])
-		.pipe(concat("app.js"))
+gulp.task("js",function(){
+	return gulp.src([config.bowerDir + "jquery/dist/jquery.js", "./develoment/js/*", "app.js"])
+		.pipe(uglify())
 		.pipe(gulp.dest(config.dest + "/js"));
 });
