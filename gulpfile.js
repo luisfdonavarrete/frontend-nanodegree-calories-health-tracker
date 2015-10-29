@@ -52,3 +52,12 @@ gulp.task("js",function(){
 		.pipe(gulpif(env === "production", uglify()))
 		.pipe(gulp.dest(config.dest + "/js"));
 });
+
+/* Watch task: run the specified task(s) when some file(s) change*/
+gulp.task("watch", function(){
+	gulp.watch("development/scss/*.scss", ["css"]);
+	gulp.watch("development/js/**/*.js", ["js"]);
+});
+
+/* Define the default task */
+gulp.task("default", ["icons", "css", "js", "watch"]);
