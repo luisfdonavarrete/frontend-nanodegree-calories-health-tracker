@@ -20,66 +20,123 @@
 	<body>
 		<div class="jumbotron">
 			<div class="container">
-				<img class="pull-left logo" src="assets/images/logo-placeholder.jpg" alt="logo">
+				<!--<img class="pull-left logo" src="assets/images/logo-placeholder.jpg" alt="logo">-->
 				<h1 class="pull-right">Health Tracker</h1> 
 			</div>
 		</div>
 		<section class="container">
 			<div class="row">
 				<div class="col-xs-10 col-xs-offset-1">
-					<div>
-						<!-- Nav tabs -->
-						<ul class="nav nav-tabs" role="tablist">
-							<li role="presentation" class="active">
-								<a href="#home" aria-controls="home" role="tab" data-toggle="tab">
-									My Food Diary
-								</a>
-							</li>
-							<li role="presentation">
-								<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
-									Profile
-								</a>
-							</li>
-							<li role="presentation">
-								<a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
-									Messages
-								</a>
-							</li>
-						</ul>
+				
+					<div id="health-tracker-app" class="panel panel-default">
+						<div class="panel-body">
+							<!-- Nav tabs -->
+							<ul class="nav nav-tabs" role="tablist">
+								<li role="presentation" class="active">
+									<a href="#home" aria-controls="home" role="tab" data-toggle="tab">
+										My Food Diary
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+										Profile
+									</a>
+								</li>
+								<li role="presentation">
+									<a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">
+										Messages
+									</a>
+								</li>
+							</ul>
+							
 
-						<!-- Tab panes -->
-						<div class="tab-content">
-							<div role="tabpanel" class="tab-pane active" id="home">
-
+							<!-- Tab panes -->
+							<div class="tab-content">
+								<div role="tabpanel" class="tab-pane active" id="home">
+									
+									<ul class="list-group">
+										<li class="list-group-item">
+											<div class="container-fluid">
+												<div class="row">
+													<div class="col-xs-10">Item</div>
+													<div class="col-xs-2">Cals</div>
+												</div>
+											</div>				
+										</li>
+									</ul>
+									<div class="list-fixed-size">
+										<ul id="selected-food-items" class="list-group margin-bottom-0"></ul>
+									</div>
+									<div class="container-fluid">
+										<div class="row">											
+											<div class="col-xs-12 paddind-left-0 paddind-right-0">
+												<a id="add-item" href="#">
+													<i class="glyphicon glyphicon-plus"></i> Add Item
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
-							<div role="tabpanel" class="tab-pane" id="profile">...</div>
-							<div role="tabpanel" class="tab-pane" id="messages">...</div>
 						</div>
-
-					</div>
+					</div>	
 				</div>
 			</div>
-		</section>	
-		<script type="text/template">
-
+		</section>
+		
+		<script type="text/template" id="meal-item-template">	
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-xs-8"><%= item_name %><span class="hidden-sm hidden-xs "> - <%= brand_name %></span></div>
+					<div class="col-xs-2"><span class="badge"><small><%= nf_calories %></small></span></div>
+					<div class="col-xs-2">
+						<% if (form === true) { %>
+						<input id="item-<%= item_id %>[brand_id]" name="item-<%= item_id %>[brand_id]" type="text" value="<%= brand_id%>" hidden="hidden">
+							<input id="item-<%= item_id %>[brand_name]" name="item-<%= item_id %>[brand_name]" type="text" value="<%= brand_name%>"hidden="hidden">
+							<input id="item-<%= item_id %>[item_id]" name="item-<%= item_id %>[item_id]" type="text" value="<%= item_id%>" hidden="hidden">
+							<input id="item-<%= item_id %>[item_name]" name="item-<%= item_id %>[item_name]" type="text" value="<%= item_name%>" hidden="hidden">
+							<input id="item-<%= item_id %>[nf_calories]" name="item-<%= item_id %>[nf_calories]" type="text" value="<%= nf_calories%>" hidden="hidden">
+							<div class="checkbox checkbox-primary">
+							<input id="item-<%= item_id %>[checked]" name="item-<%= item_id %>[checked]" type="checkbox">
+							<label for="checkbox"></label>
+			</div>
+						<% } else{ %>
+							<button class="btn btn-default delete">
+								<i class="glyphicon glyphicon-trash" aria-hidden="true"></i>
+							</button>
+						<% } %>
+					</div>
+				</div>
+			</div>				
 		</script>
-		<div class="modal fade">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title">Modal title</h4>
+		
+		<script type="text/template" id="search-modal-view-template">
+			<form>
+				<div class="form-group">
+					<div class="input-group">
+						<input id="search-input" name="search-input" type="text" class="form-control" placeholder="Search for..." autocomplete="off">
+						<span class="input-group-addon">
+							<span class="glyphicon glyphicon-search"></span>
+						</span>
 					</div>
-					<div class="modal-body">
-						<p>One fine body&hellip;</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save changes</button>
-					</div>
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div><!-- /.modal -->
+				</div>
+			</form>
+			<form id="food-form">
+				<ul class="list-group margin-bottom-0">
+					<li class="list-group-item">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-xs-10">Item</div>
+								<div class="col-xs-2">Cals</div>
+							</div>
+						</div>				
+					</li>
+				</ul>
+				<div class="list-fixed-size">
+					<ul class="list-group" id="food-list"></ul>
+				</div>
+			</form>
+		</script>
 		<script src="assets/js/app.js"></script>
 	</body>
 </html>

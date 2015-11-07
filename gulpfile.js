@@ -10,7 +10,7 @@ var gulp = require("gulp"),
 var env = process.env.NODE_ENV  || "development"; 
 
 var config = {
-	sassPath: "./develoment/scss",
+	sassPath: "./development/scss",
 	bowerDir: "./bower_components",
 	dest: "./assets"
 };
@@ -39,14 +39,17 @@ gulp.task("html", function(){
 
 /* Complie cssc to a css file */
 gulp.task('css', function() {
-	return sass(config.sassPath + '/styles.scss', {
-		style: 'compressed',
+	var configCss = {
 		loadPath: [
 			config.bowerDir,
 			config.bowerDir + '/bootstrap-sass/assets/stylesheets',
 			config.bowerDir + '/font-awesome/scss',
 		]
-	})
+	};
+	if(env === "production"){
+		config.style = "compressed"
+	}
+	return sass(config.sassPath + '/styles.scss', configCss)
 	.on("error", notify.onError(function (error) {
 		return "Error: " + error.message;
 	}))
@@ -56,7 +59,18 @@ gulp.task('css', function() {
 
 /* Concat, minify javascript files */
 gulp.task("js",function(){
-	return gulp.src([config.bowerDir + "/jquery/dist/jquery.js", "./develoment/js/**/*.js"])
+	return gulp.src([
+			config.bowerDir + "/jquery/dist/jquery.js",
+			config.bowerDir + "/bootstrap/dist/js/bootstrap.js",
+			config.bowerDir + "/underscore/underscore.js",
+			config.bowerDir + "/backbone/backbone.js",
+			config.bowerDir + "/backbone.bootstrap-modal/src/backbone.bootstrap-modal.js",
+			"./development/js/*.js",
+			"./development/js/models/*.js",
+			"./development/js/collections/*.js",
+			"./development/js/views/*.js",
+			"./development/js/routers/*.js"
+		])
 		.pipe(concat("app.js"))
 		.pipe(gulpif(env === "production", uglify()))
 		.pipe(gulp.dest(config.dest + "/js"))
