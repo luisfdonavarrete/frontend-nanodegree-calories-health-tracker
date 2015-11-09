@@ -5,6 +5,10 @@ $icon-font-path: "../fonts/";
 @import "font-awesome";
 
 
+.col-xs-12{
+	padding-left: 0;
+	padding-right: 0;
+}
 .delete{
 	border-color: transparent;
 	padding: 0;
@@ -60,7 +64,7 @@ $icon-font-path: "../fonts/";
 }
 
 .tab-content{
-	padding: 20px 15px;
+	padding: 20px 2px;
 }
 
 .margin-bottom-0{

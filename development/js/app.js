@@ -25,18 +25,31 @@ $.fn.serializeForm = function(){
 var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
     NUTRITIONIX_APP_ID = "1a450e10",
     NUTRITIONIX_APP_KEYS = "051abdd81592fbfe10e3e2ce44667643",
-    ENTER_KEY = 13;
+    ENTER_KEY = 13,
+    myFirebaseRef = new Firebase("https://blistering-inferno-4995.firebaseio.com/");
 
 var HealthApp = {
-
 	Views: {},
 	Models: {},
 	Collections: {},
-	Router: {}
-	
-}
+	Router: {}	
+};
 
-$(document).ready(function(){
-	HealthApp.Router.Instance = new HealthApp.Router();    
-	Backbone.history.start();
+$(document).ready(function(){	
+	var actualDate = (new Date()).toISOString().slice(0,10).replace(/-/g,"/");
+	var startTime = Date.parse(actualDate + " 00:00:00") / 1000;
+	var endTime = Date.parse(actualDate + " 23:59:59") / 1000;
+	
+	myFirebaseRef.orderByChild("date").startAt(endTime).once("value", function(snapshot) {
+		var initialValues = _.map(snapshot.val(), function(item,id){
+			item.firebaseID = id;
+			return item; 
+		});
+		HealthApp.Router.Instance = new HealthApp.Router({
+			"initialValues": initialValues
+		});    
+		Backbone.history.start();
+	}, function (errorObject) {
+		console.log("The read failed: " + errorObject.code);
+	});	
 });

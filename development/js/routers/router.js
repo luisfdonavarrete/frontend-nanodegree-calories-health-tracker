@@ -1,4 +1,8 @@
 HealthApp.Router = Backbone.Router.extend({
+	
+	initialize: function(options){
+		this.initialValues = options.initialValues || [];
+	},
 
 	routes: {
 		'home': 'home',
@@ -7,25 +11,7 @@ HealthApp.Router = Backbone.Router.extend({
 	},
 
 	home: function(){
-		var initial = [
-			{
-				brand_id: "Brand Id One",
-				brand_name: "Brand Name One",
-				item_id: "Item Id One",
-				item_name: "Item Name One",
-				nf_calories: "20",
-				date: new Date()
-			},
-			{
-				brand_id: "Brand Id Two",
-				brand_name: "Brand Name Two",
-				item_id: "Item Id Two",
-				item_name: "Item Name Two",
-				nf_calories: "50",
-				date: new Date()
-			}
-		]
-		var view = new HealthApp.Views.AppView(initial || []);
+		var view = new HealthApp.Views.AppView(this.initialValues);
 	},
 	
 	

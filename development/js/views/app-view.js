@@ -16,14 +16,13 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	},
 	
 	render: function(){
-		var foodItem = null;
 		this.collection.each(function(item){
 			this.renderFoodItem(item);
 		}, this);
 	},
 	
 	renderFoodItem: function(item){
-		foodItem = new HealthApp.Views.FoodItemView({
+		var foodItem = new HealthApp.Views.FoodItemView({
 			model: item
 		});
 		this.$list.append(foodItem.render().el);
@@ -48,20 +47,20 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	addFoodItem:  function(){
 		this.$addItem.toggleClass("active");
 		var form  = this.modal.$el.find("#food-form").serializeForm();
-		var selectedItem = _.filter(form, function(item){
-			if(item.checked){
-				return {
-					brand_name: item.brand_name,
-					item_id: item.item_id,
-					item_name: item.item_name,
-					nf_calories: item.nf_calories
-				};
-			}
-		}, this);
 		
-		_.each(selectedItem, function(item){
+		var selectedItem = _.filter(form, function(item){
+			if(item.checked !== undefined ){
+				delete item.checked;
+				item.date = new Date().getTime();	
+				return item;
+			}
+		});
+		var pushRef;
+		_.each(selectedItem, function(item){			
+			pushRef = myFirebaseRef.push(item);
+			item.firebaseID = pushRef.key();
 			this.collection.add(new HealthApp.Models.FoodModel(item));
-		}, this);
+		},this);
 	}
 
 });

@@ -15324,20 +15324,33 @@ $.fn.serializeForm = function(){
 var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
     NUTRITIONIX_APP_ID = "1a450e10",
     NUTRITIONIX_APP_KEYS = "051abdd81592fbfe10e3e2ce44667643",
-    ENTER_KEY = 13;
+    ENTER_KEY = 13,
+    myFirebaseRef = new Firebase("https://blistering-inferno-4995.firebaseio.com/");
 
 var HealthApp = {
-
 	Views: {},
 	Models: {},
 	Collections: {},
-	Router: {}
-	
-}
+	Router: {}	
+};
 
-$(document).ready(function(){
-	HealthApp.Router.Instance = new HealthApp.Router();    
-	Backbone.history.start();
+$(document).ready(function(){	
+	var actualDate = (new Date()).toISOString().slice(0,10).replace(/-/g,"/");
+	var startTime = Date.parse(actualDate + " 00:00:00") / 1000;
+	var endTime = Date.parse(actualDate + " 23:59:59") / 1000;
+	
+	myFirebaseRef.orderByChild("date").startAt(endTime).once("value", function(snapshot) {
+		var initialValues = _.map(snapshot.val(), function(item,id){
+			item.firebaseID = id;
+			return item; 
+		});
+		HealthApp.Router.Instance = new HealthApp.Router({
+			"initialValues": initialValues
+		});    
+		Backbone.history.start();
+	}, function (errorObject) {
+		console.log("The read failed: " + errorObject.code);
+	});	
 });
 HealthApp.Models.FoodModel = Backbone.Model.extend({
 	
@@ -15348,7 +15361,8 @@ HealthApp.Models.FoodModel = Backbone.Model.extend({
 		item_name: "",
 		nf_calories: "",
 		date: new Date(),
-		form: false
+		form: false,
+		firebaseID: null
 	},
 	
 });
@@ -15406,14 +15420,13 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	},
 	
 	render: function(){
-		var foodItem = null;
 		this.collection.each(function(item){
 			this.renderFoodItem(item);
 		}, this);
 	},
 	
 	renderFoodItem: function(item){
-		foodItem = new HealthApp.Views.FoodItemView({
+		var foodItem = new HealthApp.Views.FoodItemView({
 			model: item
 		});
 		this.$list.append(foodItem.render().el);
@@ -15438,20 +15451,20 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	addFoodItem:  function(){
 		this.$addItem.toggleClass("active");
 		var form  = this.modal.$el.find("#food-form").serializeForm();
-		var selectedItem = _.filter(form, function(item){
-			if(item.checked){
-				return {
-					brand_name: item.brand_name,
-					item_id: item.item_id,
-					item_name: item.item_name,
-					nf_calories: item.nf_calories
-				};
-			}
-		}, this);
 		
-		_.each(selectedItem, function(item){
+		var selectedItem = _.filter(form, function(item){
+			if(item.checked !== undefined ){
+				delete item.checked;
+				item.date = new Date().getTime();	
+				return item;
+			}
+		});
+		var pushRef;
+		_.each(selectedItem, function(item){			
+			pushRef = myFirebaseRef.push(item);
+			item.firebaseID = pushRef.key();
 			this.collection.add(new HealthApp.Models.FoodModel(item));
-		}, this);
+		},this);
 	}
 
 });
@@ -15472,14 +15485,18 @@ HealthApp.Views.FoodItemView = Backbone.View.extend({
 	template : _.template($("#meal-item-template").html()),
 	
 	render: function() {
-		//this.el is what we defined in tagName. use $el to get access to jQuery html() function
 		this.$el.html( this.template(this.model.attributes) );
 		return this;
 	},
 	
 	deleteFoodItem: function(){
-		this.model.destroy();
-		this.remove();
+		var self = this;
+		var foodItemRef = new Firebase(myFirebaseRef + this.model.attributes.firebaseID);
+		foodItemRef.remove(function(){
+			self.model.destroy();
+			self.remove();
+		});
+		
 	}
 });
 HealthApp.Views.SearchModalView = Backbone.View.extend({
@@ -15523,6 +15540,10 @@ HealthApp.Views.SearchModalView = Backbone.View.extend({
 	
 });
 HealthApp.Router = Backbone.Router.extend({
+	
+	initialize: function(options){
+		this.initialValues = options.initialValues || [];
+	},
 
 	routes: {
 		'home': 'home',
@@ -15531,25 +15552,7 @@ HealthApp.Router = Backbone.Router.extend({
 	},
 
 	home: function(){
-		var initial = [
-			{
-				brand_id: "Brand Id One",
-				brand_name: "Brand Name One",
-				item_id: "Item Id One",
-				item_name: "Item Name One",
-				nf_calories: "20",
-				date: new Date()
-			},
-			{
-				brand_id: "Brand Id Two",
-				brand_name: "Brand Name Two",
-				item_id: "Item Id Two",
-				item_name: "Item Name Two",
-				nf_calories: "50",
-				date: new Date()
-			}
-		]
-		var view = new HealthApp.Views.AppView(initial || []);
+		var view = new HealthApp.Views.AppView(this.initialValues);
 	},
 	
 	

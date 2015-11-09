@@ -15,13 +15,17 @@ HealthApp.Views.FoodItemView = Backbone.View.extend({
 	template : _.template($("#meal-item-template").html()),
 	
 	render: function() {
-		//this.el is what we defined in tagName. use $el to get access to jQuery html() function
 		this.$el.html( this.template(this.model.attributes) );
 		return this;
 	},
 	
 	deleteFoodItem: function(){
-		this.model.destroy();
-		this.remove();
+		var self = this;
+		var foodItemRef = new Firebase(myFirebaseRef + this.model.attributes.firebaseID);
+		foodItemRef.remove(function(){
+			self.model.destroy();
+			self.remove();
+		});
+		
 	}
 });
