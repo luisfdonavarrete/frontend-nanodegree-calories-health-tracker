@@ -6,12 +6,17 @@ HealthApp.Router = Backbone.Router.extend({
 
 	routes: {
 		'home': 'home',
-		'search': 'search',
+		'#search': 'search',
 		'*path': 'home'
 	},
 
 	home: function(){
 		var view = new HealthApp.Views.AppView(this.initialValues);
+	},
+	
+	search: function () {
+		console.log("adad");
+		//var view = new HealthApp.Views.
 	},
 	
 	

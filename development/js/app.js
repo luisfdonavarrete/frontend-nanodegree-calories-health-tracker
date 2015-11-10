@@ -11,13 +11,11 @@ $.fn.serializeForm = function(){
 	}
 	
 	$.each(a, function() {
-		result = formatItem(this);		
-		if (o[result[0]] !== undefined) {
-			o[result[0]][result[1]] = this.value;
-		}
-		else{
+		result = formatItem(this);
+		if(o.hasOwnProperty(result[0]) === false){
 			o[result[0]] = {};
-		}
+		}	
+		o[result[0]][result[1]] = this.value;
 	});
 	return o;
 };
@@ -35,12 +33,12 @@ var HealthApp = {
 	Router: {}	
 };
 
-$(document).ready(function(){	
-	var actualDate = (new Date()).toISOString().slice(0,10).replace(/-/g,"/");
-	var startTime = Date.parse(actualDate + " 00:00:00") / 1000;
-	var endTime = Date.parse(actualDate + " 23:59:59") / 1000;
+$(document).ready(function(){
 	
-	myFirebaseRef.orderByChild("date").startAt(endTime).once("value", function(snapshot) {
+	var startTime = moment( new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime() ).unix();
+	var endTime = moment( new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime() ).unix();
+	
+	myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function(snapshot) {
 		var initialValues = _.map(snapshot.val(), function(item,id){
 			item.firebaseID = id;
 			return item; 
@@ -49,7 +47,8 @@ $(document).ready(function(){
 			"initialValues": initialValues
 		});    
 		Backbone.history.start();
-	}, function (errorObject) {
+	}, 
+	function (errorObject) {
 		console.log("The read failed: " + errorObject.code);
 	});	
 });

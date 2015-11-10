@@ -6,7 +6,7 @@ HealthApp.Models.FoodModel = Backbone.Model.extend({
 		item_id: "",
 		item_name: "",
 		nf_calories: "",
-		date: new Date(),
+		date: moment(new Date().getTime()).unix(),
 		form: false,
 		firebaseID: null
 	},

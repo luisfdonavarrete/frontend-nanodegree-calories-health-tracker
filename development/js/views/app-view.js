@@ -1,7 +1,5 @@
 HealthApp.Views.AppView = Backbone.View.extend({
 
-	// Instead of generating a new element, bind to the existing skeleton of
-	// the App already present in the HTML.
 	el: '#health-tracker-app',
 	
 	initialize: function(initialListFood){
@@ -47,19 +45,23 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	addFoodItem:  function(){
 		this.$addItem.toggleClass("active");
 		var form  = this.modal.$el.find("#food-form").serializeForm();
+		console.log(form);
+				
+		var selectedItems = [];
 		
-		var selectedItem = _.filter(form, function(item){
-			if(item.checked !== undefined ){
+		_.each(form, function (item) {
+			if(item.checked !== undefined){
 				delete item.checked;
-				item.date = new Date().getTime();	
-				return item;
-			}
+				selectedItems.push(new HealthApp.Models.FoodModel(item));
+			}		
 		});
+		
 		var pushRef;
-		_.each(selectedItem, function(item){			
-			pushRef = myFirebaseRef.push(item);
-			item.firebaseID = pushRef.key();
-			this.collection.add(new HealthApp.Models.FoodModel(item));
+		
+		_.each(selectedItems, function(item){
+			pushRef = myFirebaseRef.push(item.attributes);
+			item.attributes.firebaseID = pushRef.key();
+			this.collection.add(item);
 		},this);
 	}
 

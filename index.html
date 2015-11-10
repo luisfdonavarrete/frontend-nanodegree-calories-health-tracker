@@ -36,7 +36,7 @@
 							</a>
 						</li>
 						<li role="presentation">
-							<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">
+							<a href="#search" aria-controls="profile" role="tab" data-toggle="tab">
 								Profile
 							</a>
 						</li>
@@ -80,14 +80,15 @@
 			</div>
 		</section>
 		
-		<script type="text/template" id="meal-item-template">	
+		<!-- Template for a single food item -->
+		<script type="text/template" id="meal-item-template">
 			<div class="container-fluid">
 				<div class="row">
 					<div class="col-xs-8"><%= item_name %><span class="hidden-sm hidden-xs "> - <%= brand_name %></span></div>
 					<div class="col-xs-2"><span class="badge"><small><%= nf_calories %></small></span></div>
 					<div class="col-xs-2">
 						<% if (form === true) { %>
-						<input id="item-<%= item_id %>[brand_id]" name="item-<%= item_id %>[brand_id]" type="text" value="<%= brand_id%>" hidden="hidden">
+						<input id="item-<%= item_id %>[brand_id]" name="item-<%= item_id %>[brand_id]" type="text" value="<%= brand_id %>" hidden="hidden">
 							<input id="item-<%= item_id %>[brand_name]" name="item-<%= item_id %>[brand_name]" type="text" value="<%= brand_name%>"hidden="hidden">
 							<input id="item-<%= item_id %>[item_id]" name="item-<%= item_id %>[item_id]" type="text" value="<%= item_id%>" hidden="hidden">
 							<input id="item-<%= item_id %>[item_name]" name="item-<%= item_id %>[item_name]" type="text" value="<%= item_name%>" hidden="hidden">
@@ -106,6 +107,7 @@
 			</div>				
 		</script>
 		
+		<!-- Template for the modal view --> 
 		<script type="text/template" id="search-modal-view-template">
 			<form>
 				<div class="form-group">
@@ -133,6 +135,11 @@
 				</div>
 			</form>
 		</script>
+		
+		<script type="text/template" id="search-template">
+			
+		</script>
+		
 		<script src="assets/js/app.js"></script>
 	</body>
 </html>

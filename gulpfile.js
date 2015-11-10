@@ -47,7 +47,7 @@ gulp.task('css', function() {
 		]
 	};
 	if(env === "production"){
-		config.style = "compressed"
+		config.style = "compressed";
 	}
 	return sass(config.sassPath + '/styles.scss', configCss)
 	.on("error", notify.onError(function (error) {
@@ -65,6 +65,7 @@ gulp.task("js",function(){
 			config.bowerDir + "/underscore/underscore.js",
 			config.bowerDir + "/backbone/backbone.js",
 			config.bowerDir + "/backbone.bootstrap-modal/src/backbone.bootstrap-modal.js",
+			config.bowerDir + "/moment/moment.js",
 			"./development/js/*.js",
 			"./development/js/models/*.js",
 			"./development/js/collections/*.js",
