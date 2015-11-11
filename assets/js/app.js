@@ -18492,28 +18492,6 @@ if (typeof jQuery === 'undefined') {
     return _moment;
 
 }));
-$.fn.serializeForm = function(){
-	var o = {};
-	var a = this.serializeArray();
-	
-	var result;
-	function formatItem(item){
-		var aux = "";
-		aux = item.name.split("[",2);
-		aux[1] =  aux[1].replace("]", "");
-		return aux;
-	}
-	
-	$.each(a, function() {
-		result = formatItem(this);
-		if(o.hasOwnProperty(result[0]) === false){
-			o[result[0]] = {};
-		}	
-		o[result[0]][result[1]] = this.value;
-	});
-	return o;
-};
-
 var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
     NUTRITIONIX_APP_ID = "1a450e10",
     NUTRITIONIX_APP_KEYS = "051abdd81592fbfe10e3e2ce44667643",
@@ -18524,27 +18502,34 @@ var HealthApp = {
 	Views: {},
 	Models: {},
 	Collections: {},
-	Router: {}	
+	Router: {}
 };
 
-$(document).ready(function(){
-	
-	var startTime = moment( new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime() ).unix();
-	var endTime = moment( new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime() ).unix();
-	
-	myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function(snapshot) {
-		var initialValues = _.map(snapshot.val(), function(item,id){
-			item.firebaseID = id;
-			return item; 
-		});
-		HealthApp.Router.Instance = new HealthApp.Router({
-			"initialValues": initialValues
-		});    
-		Backbone.history.start();
-	}, 
-	function (errorObject) {
-		console.log("The read failed: " + errorObject.code);
-	});	
+$.fn.serializeForm = function () {
+	var o = {};
+	var a = this.serializeArray();
+
+	var result;
+	function formatItem(item) {
+		var aux = "";
+		aux = item.name.split("[", 2);
+		aux[1] = aux[1].replace("]", "");
+		return aux;
+	}
+
+	$.each(a, function () {
+		result = formatItem(this);
+		if (o.hasOwnProperty(result[0]) === false) {
+			o[result[0]] = {};
+		}
+		o[result[0]][result[1]] = this.value;
+	});
+	return o;
+};
+
+$(document).ready(function () {
+	HealthApp.Router.Instance = new HealthApp.Router();
+	Backbone.history.start();
 });
 HealthApp.Models.FoodModel = Backbone.Model.extend({
 	
@@ -18606,7 +18591,6 @@ HealthApp.Views.AppView = Backbone.View.extend({
 		this.collection = new HealthApp.Collections.FoodList(_.map(initialListFood, function(item){
 			return new HealthApp.Models.FoodModel(item);
 		}));
-		this.$addItem = this.$("#add-item");
 		this.listenTo( this.collection, 'add', this.renderFoodItem );
 		this.render();
 	},
@@ -18625,7 +18609,45 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	},
 	
 	events:{
-		'click #add-item': 'loadFood'
+		"click .nav a[href*=#]:not([href=#])": "test"
+	},
+	
+	test: function (e) {
+		location.hash = e.currentTarget.hash;
+	}
+
+});
+HealthApp.Views.FoodDiaryView = Backbone.View.extend({
+	
+	template: _.template($("#home-template").html()),
+	
+	
+	initialize: function(initialListFood){
+		this.modal = undefined;
+		this.collection = new HealthApp.Collections.FoodList(_.map(initialListFood, function(item){
+			return new HealthApp.Models.FoodModel(item);
+		}));
+		this.$addItem = this.$("#add-item");
+		this.listenTo( this.collection, 'add', this.renderFoodItem );
+	},
+	
+	render: function(){		
+		this.$el.html(this.template());       
+		this.collection.each(function(item){
+			this.renderFoodItem(item);
+		}, this);
+		return this;
+	},
+	
+	renderFoodItem: function(item){
+		var foodItem = new HealthApp.Views.FoodItemView({
+			model: item
+		});
+		this.$el.find("#selected-food-items").append(foodItem.render().el);
+	},
+	
+	events:{
+		"click #add-item": "loadFood"
 	},
 
 	loadFood: function( e ) {
@@ -18643,7 +18665,6 @@ HealthApp.Views.AppView = Backbone.View.extend({
 	addFoodItem:  function(){
 		this.$addItem.toggleClass("active");
 		var form  = this.modal.$el.find("#food-form").serializeForm();
-		console.log(form);
 				
 		var selectedItems = [];
 		
@@ -18736,25 +18757,41 @@ HealthApp.Views.SearchModalView = Backbone.View.extend({
 	
 });
 HealthApp.Router = Backbone.Router.extend({
-	
-	initialize: function(options){
-		this.initialValues = options.initialValues || [];
+
+	initialize: function () {
+		var self = this;
+		var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
+		var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
+		this.initialValues = [];
+
+		myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function (snapshot) {
+			var initialValues = _.map(snapshot.val(), function (item, id) {
+				item.firebaseID = id;
+				return item;
+			});
+			self.initialValues = initialValues;
+		},
+		function (errorObject) {
+			console.log("The read failed: " + errorObject.code);
+		});
 	},
 
 	routes: {
-		'home': 'home',
-		'#search': 'search',
-		'*path': 'home'
+		"home": "home",
+		"search": "search",
+		"*path": "home"
 	},
 
-	home: function(){
-		var view = new HealthApp.Views.AppView(this.initialValues);
+	home: function () {
+		console.log(this);
+		new HealthApp.Views.AppView();
+		var view = new HealthApp.Views.FoodDiaryView(this.initialValues);
+		$("#content").html(view.render().el);
 	},
-	
+
 	search: function () {
-		console.log("adad");
-		//var view = new HealthApp.Views.
+		$("#content").html("Parece qie vael");
 	},
-	
-	
+
+
 });
