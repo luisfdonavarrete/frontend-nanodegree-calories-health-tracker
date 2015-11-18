@@ -61,7 +61,8 @@ gulp.task('css', function() {
 gulp.task("js",function(){
 	return gulp.src([
 			config.bowerDir + "/jquery/dist/jquery.js",
-			config.bowerDir + "/bootstrap/dist/js/bootstrap.js",
+			config.bowerDir + "/bootstrap/js/transition.js",
+			config.bowerDir + "/bootstrap/js/modal.js",
 			config.bowerDir + "/underscore/underscore.js",
 			config.bowerDir + "/backbone/backbone.js",
 			config.bowerDir + "/backbone.bootstrap-modal/src/backbone.bootstrap-modal.js",

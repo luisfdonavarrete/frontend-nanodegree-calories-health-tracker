@@ -34,6 +34,8 @@ $.fn.serializeForm = function () {
 };
 
 $(document).ready(function () {
+
 	HealthApp.Router.Instance = new HealthApp.Router();
 	Backbone.history.start();
+
 });

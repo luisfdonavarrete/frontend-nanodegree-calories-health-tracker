@@ -23,14 +23,5 @@ HealthApp.Views.AppView = Backbone.View.extend({
 			model: item
 		});
 		this.$list.append(foodItem.render().el);
-	},
-	
-	events:{
-		"click .nav a[href*=#]:not([href=#])": "test"
-	},
-	
-	test: function (e) {
-		location.hash = e.currentTarget.hash;
 	}
-
 });
