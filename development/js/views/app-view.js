@@ -1,27 +1,35 @@
-HealthApp.Views.AppView = Backbone.View.extend({
+var HealthApp = HealthApp || {};
+
+(function($){
+	
+	'use strict';
+	
+	HealthApp.AppView = Backbone.View.extend({
 
 	el: '#health-tracker-app',
 	
-	initialize: function(initialListFood){
-		this.modal = undefined;
-		this.$list = this.$("#selected-food-items");
-		this.collection = new HealthApp.Collections.FoodList(_.map(initialListFood, function(item){
-			return new HealthApp.Models.FoodModel(item);
-		}));
-		this.listenTo( this.collection, 'add', this.renderFoodItem );
+	initialize: function(){
 		this.render();
 	},
 	
 	render: function(){
-		this.collection.each(function(item){
-			this.renderFoodItem(item);
-		}, this);
-	},
-	
-	renderFoodItem: function(item){
-		var foodItem = new HealthApp.Views.FoodItemView({
-			model: item
-		});
-		this.$list.append(foodItem.render().el);
+		new HealthApp.FoodDiaryView({ collection: HealthApp.foodCollection });
 	}
-});
+	
+	/* */
+	/*var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
+		var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
+
+		myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function (snapshot) {
+			var initialValues = _.map(snapshot.val(), function (item, id) {
+				item.firebaseID = id;
+				return item;
+			});
+			self.collection = new HealthApp.Collections.FoodList(_.map(initialValues, function (item) {
+				return new HealthApp.Models.FoodModel(item);
+			}));
+			typeof callback === "function" && callback(self);
+		});*/
+	/**/
+});	
+}(jQuery));

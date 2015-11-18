@@ -4,12 +4,7 @@ var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
     ENTER_KEY = 13,
     myFirebaseRef = new Firebase("https://blistering-inferno-4995.firebaseio.com/");
 
-var HealthApp = {
-	Views: {},
-	Models: {},
-	Collections: {},
-	Router: {}
-};
+var HealthApp = HealthApp || {};
 
 $.fn.serializeForm = function () {
 	var o = {};
@@ -33,9 +28,12 @@ $.fn.serializeForm = function () {
 	return o;
 };
 
-$(document).ready(function () {
-
-	HealthApp.Router.Instance = new HealthApp.Router();
-	Backbone.history.start();
-
+// Create a function to kick off our BackboneFire app
+function init() {
+  // The data we are syncing from our remote Firebase database
+  var app = new HealthApp.AppView();
+}
+// When the document is ready, call the init function
+$(function() {
+  init();
 });

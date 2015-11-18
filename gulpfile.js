@@ -66,6 +66,7 @@ gulp.task("js",function(){
 			config.bowerDir + "/underscore/underscore.js",
 			config.bowerDir + "/backbone/backbone.js",
 			config.bowerDir + "/backbone.bootstrap-modal/src/backbone.bootstrap-modal.js",
+			config.bowerDir + "/backbonefire/dist/backbonefire.js",
 			config.bowerDir + "/moment/moment.js",
 			"./development/js/*.js",
 			"./development/js/models/*.js",

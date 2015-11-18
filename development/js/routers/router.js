@@ -1,4 +1,7 @@
-HealthApp.Router = Backbone.Router.extend({
+var HealthApp = HealthApp || {};
+
+(function () {
+	HealthApp.Router = Backbone.Router.extend({
 
 	routes: {
 		"home": "home",
@@ -7,9 +10,10 @@ HealthApp.Router = Backbone.Router.extend({
 	},
 
 	home: function () {
-		var view = new HealthApp.Views.FoodDiaryView(function (element) {
+		new HealthApp.AppView();
+		/*var view = new HealthApp.FoodDiaryView(function (element) {
 			$("#content").html(element.render().el);	
-		});		
+		});	*/	
 	},
 
 	history: function () {
@@ -18,4 +22,5 @@ HealthApp.Router = Backbone.Router.extend({
 			$("#content").html(element.render().el);
 		});		
 	}
-});
+});	
+}());
