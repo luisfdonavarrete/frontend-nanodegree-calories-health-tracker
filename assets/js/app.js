@@ -17435,8 +17435,7 @@ var HealthApp = HealthApp || {};
 			item_name: "",
 			nf_calories: "",
 			date: moment(new Date().getTime()).unix(),
-			form: false,
-			firebaseID: null
+			form: false
 		}
 	});
 })();
@@ -17449,8 +17448,19 @@ var HealthApp =  HealthApp || {};
 	
 	var firebaseFoodList = Backbone.Firebase.Collection.extend({
 		model: HealthApp.FoodModel,
-		url: 'https://blistering-inferno-4995.firebaseio.com/',
-		autoSync: true
+		url: function(){
+			return new Firebase('https://blistering-inferno-4995.firebaseio.com/');
+		},
+		autoSync: true,
+		
+		today: function () {
+			var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
+			var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
+			return this.filter(function(item){
+				return item.attributes.date >= startTime && item.attributes.date <= endTime;
+			});			
+		}
+		
 	});
 	
 	HealthApp.foodCollection = new firebaseFoodList();
@@ -17516,9 +17526,7 @@ var HealthApp = HealthApp || {};
 	}
 	
 	/* */
-	/*var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
-		var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
-
+	/*
 		myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function (snapshot) {
 			var initialValues = _.map(snapshot.val(), function (item, id) {
 				item.firebaseID = id;
@@ -17551,12 +17559,15 @@ var HealthApp = HealthApp || {};
 			this.modal = undefined;
 			this.$addItem = self.$("#add-item"); /*TODO: review if it works*/
 			this.$content = $('#content'); /*TODO: review if it works*/
-			this.listenTo(this.collection, 'add', this.renderFoodItem);
-			this.render();
+			this.listenTo(this.collection, 'sync', this.render);
 		},
 
 		render: function () {
+			var items = this.collection.today();
 			this.$content.html(this.$el.html(this.template()));
+			_.each(items, function (item) {
+				this.renderFoodItem(item);
+			}, this);
 			return this;
 		},
 
@@ -17618,7 +17629,6 @@ var HealthApp = HealthApp || {};
 
 		deleteFoodItem: function () {
 			this.model.destroy();
-			HealthApp.foodCollection.remove(this.model);
 		}
 	});
 } (jQuery));

@@ -17,9 +17,7 @@ var HealthApp = HealthApp || {};
 	}
 	
 	/* */
-	/*var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
-		var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
-
+	/*
 		myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function (snapshot) {
 			var initialValues = _.map(snapshot.val(), function (item, id) {
 				item.firebaseID = id;

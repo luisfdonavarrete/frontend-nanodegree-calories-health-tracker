@@ -17,12 +17,15 @@ var HealthApp = HealthApp || {};
 			this.modal = undefined;
 			this.$addItem = self.$("#add-item"); /*TODO: review if it works*/
 			this.$content = $('#content'); /*TODO: review if it works*/
-			this.listenTo(this.collection, 'add', this.renderFoodItem);
-			this.render();
+			this.listenTo(this.collection, 'sync', this.render);
 		},
 
 		render: function () {
+			var items = this.collection.today();
 			this.$content.html(this.$el.html(this.template()));
+			_.each(items, function (item) {
+				this.renderFoodItem(item);
+			}, this);
 			return this;
 		},
 

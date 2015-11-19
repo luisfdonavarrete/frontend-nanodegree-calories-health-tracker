@@ -24,7 +24,6 @@ var HealthApp = HealthApp || {};
 
 		deleteFoodItem: function () {
 			this.model.destroy();
-			HealthApp.foodCollection.remove(this.model);
 		}
 	});
 } (jQuery));

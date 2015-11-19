@@ -10,8 +10,7 @@ var HealthApp = HealthApp || {};
 			item_name: "",
 			nf_calories: "",
 			date: moment(new Date().getTime()).unix(),
-			form: false,
-			firebaseID: null
+			form: false
 		}
 	});
 })();
