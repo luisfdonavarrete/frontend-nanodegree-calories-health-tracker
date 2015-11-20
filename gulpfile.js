@@ -47,7 +47,7 @@ gulp.task('css', function() {
 		]
 	};
 	if(env === "production"){
-		config.style = "compressed";
+		configCss.style = "compressed";
 	}
 	return sass(config.sassPath + '/styles.scss', configCss)
 	.on("error", notify.onError(function (error) {
