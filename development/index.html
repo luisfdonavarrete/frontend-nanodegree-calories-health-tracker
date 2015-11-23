@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en"> 
-	<head> 
+<html lang="en">
+	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,15 +26,15 @@
 		<section class="container-fluid">
 			<div class="row">
 				<div id="health-tracker-app" class="col-xs-12 col-sm-10 col-sm-offset-1">
-					<!-- Nav tabs --> 
+					<!-- Nav tabs -->
 					<ul class="nav nav-tabs" role="tablist">
 						<li class="active">
 							<a href="#home" role="tab">
 								My Food Diary
 							</a>
 						</li>
-						<li> 
-							<a href="#history"role="tab">
+						<li>
+							<a href="#history" role="tab">
 								History
 							</a>
 						</li>
@@ -48,7 +48,7 @@
 		<script type="text/template" id="meal-item-template">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-xs-8"><%= item_name %><span class="hidden-sm hidden-xs "> - <%= brand_name %></span></div>
+					<div class="col-xs-8"><%= item_name %> - <%= brand_name %></div>
 					<div class="col-xs-2"><span class="badge"><small><%= nf_calories %></small></span></div>
 					<div class="col-xs-2">
 						<% if (form === true) { %>
@@ -70,7 +70,6 @@
 				</div>
 			</div>
 		</script>
-
 		<!-- Home Template -->
 		<script type="text/template" id="home-template">
 			<div role="tabpanel" class="tab-pane active" id="home">
@@ -121,10 +120,12 @@
 						</div>				
 					</li>
 				</ul>
-				<div class="list-fixed-size">
-					<ul class="list-group" id="food-list"></ul>
-				</div>
+				<ul class="list-group" id="food-list"></ul>
 			</form>
+			<nav class="text-center">
+				<ul class="pagination pagination-sm">
+				</ul>
+			</nav>
 		</script>
 		<script type="text/template" id="search-template">
 </script>

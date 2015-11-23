@@ -6,10 +6,15 @@ var HealthApp = HealthApp || {};
 
 	HealthApp.SearchModalView = Backbone.View.extend({
 
-		template: _.template($("#search-modal-view-template").html()),
+		initialize: function () {
+			this.collection = null;
+		},
+
+		template: _.template($('#search-modal-view-template').html()),
 
 		events: {
-			"keypress #search-input": "getFoodItems"
+			'keypress #search-input': 'getFoodItems',
+			'click .pagination li a': 'paginationClick'
 		},
 
 		render: function () {
@@ -18,28 +23,70 @@ var HealthApp = HealthApp || {};
 		},
 
 		getFoodItems: function (e) {
-			var input = this.$el.find("#search-input");
+			var input = this.$el.find('#search-input');
 			if (e.which === ENTER_KEY && input.val().trim()) {
 				e.preventDefault();
 				var name = input.val();
-				var foodList = new HealthApp.FoodList({ name: name });
-				foodList.fetch({
-					success: this.renderFoodItems.bind(this)
+				this.collection = new HealthApp.FoodList({ name: name });
+				this.updateCollection({
+					paginationEnd: 8,
+					itemsPerPage: 8
 				});
 			}
 		},
 
-		renderFoodItems: function (foodList) {
-			var self = this,
-				model,
-				foodView,
-				list = this.$el.find("#food-list");
+		updateCollection: function (config) {
+			this.collection.queryOptions =_.extend(this.collection.queryOptions, config);
+			this.collection.fetch({
+				data: {
+					appId: NUTRITIONIX_APP_ID,
+					appKey: NUTRITIONIX_APP_KEYS,
+					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd
+				},
+				success: this.addAll.bind(this)
+			});
+		},
 
-			list.html("");
-			foodList.forEach(function (item) {
-				item.attributes.form = true;
-				foodView = new HealthApp.FoodItemView({ model: item });
-				list.append(foodView.render().el);
+		addAll: function (params) {
+			var $list = this.$el.find('#food-list'),
+				$pagination = this.$el.find('.pagination');
+
+			$pagination.html('');
+			$list.html('');
+			if (params.length > 0) {
+				params.forEach(function (item) {
+					this.addOne(item, $list);
+				}, this);
+				this.renderPagination();
+			}
+			else {
+				var $message = $('<div></div>');
+				$message.addClass('text-danger text-center');
+				$message.html('No Items Found');
+				$list.html($message);
+			}
+		},
+
+		addOne: function (item, $list) {
+			item.attributes.form = true;
+			var foodView = new HealthApp.FoodItemView({ model: item });
+			$list.append(foodView.render().el);
+		},
+		
+		paginationClick: function (e) {
+			var config = {
+				paginationStart: $(e.currentTarget).data('start'),
+				paginationEnd: $(e.currentTarget).data('end')
+			};
+			console.log(config);
+			this.updateCollection(config);
+		},		
+
+		renderPagination: function () {
+			var linkInfo = this.collection.paginationLinks();
+			var $pagination = this.$el.find('.pagination');
+			linkInfo.forEach(function (value, index) {				
+				$pagination.append('<li><a href="#" data-start="'+ value.start +'" data-end="' + value.end + '">' + value.num + '</a></li>');
 			});
 		}
 	});

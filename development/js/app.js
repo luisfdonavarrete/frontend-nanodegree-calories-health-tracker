@@ -1,8 +1,7 @@
 var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
     NUTRITIONIX_APP_ID = "1a450e10",
     NUTRITIONIX_APP_KEYS = "051abdd81592fbfe10e3e2ce44667643",
-    ENTER_KEY = 13,
-    myFirebaseRef = new Firebase("https://blistering-inferno-4995.firebaseio.com/");
+    ENTER_KEY = 13;
 
 var HealthApp = HealthApp || {};
 
