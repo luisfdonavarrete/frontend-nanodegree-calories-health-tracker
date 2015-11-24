@@ -30,7 +30,8 @@ var HealthApp = HealthApp || {};
 				this.collection = new HealthApp.FoodList({ name: name });
 				this.updateCollection({
 					paginationEnd: 8,
-					itemsPerPage: 8
+					itemsPerPage: 8,
+					paginationStart: 0
 				});
 			}
 		},
@@ -39,9 +40,11 @@ var HealthApp = HealthApp || {};
 			this.collection.queryOptions =_.extend(this.collection.queryOptions, config);
 			this.collection.fetch({
 				data: {
+					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd,
+					fields: "item_name,brand_name,item_id,brand_id,nf_calories",
+					order: 'desc',
 					appId: NUTRITIONIX_APP_ID,
 					appKey: NUTRITIONIX_APP_KEYS,
-					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd
 				},
 				success: this.addAll.bind(this)
 			});
@@ -78,7 +81,6 @@ var HealthApp = HealthApp || {};
 				paginationStart: $(e.currentTarget).data('start'),
 				paginationEnd: $(e.currentTarget).data('end')
 			};
-			console.log(config);
 			this.updateCollection(config);
 		},		
 

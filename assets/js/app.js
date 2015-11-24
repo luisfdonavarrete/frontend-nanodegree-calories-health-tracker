@@ -17494,20 +17494,14 @@ var HealthApp = HealthApp || {};
 		},
 
 		url: function () {
-			var queryUrl = NUTRITIONIX_URL + this.name +
-				"?fields=item_name,brand_name,item_id,brand_id,nf_calories" + 
-				"?order=desc";
-			return queryUrl;
+			return NUTRITIONIX_URL + this.name;
 		},
-
-		/*parse: function (response) {
-			this.trigger("collection:updated", { count: response.count, total: response.total, startAt: response.startAt });
-			return response.records;
-		},*/
+		
 
 		parse: function (response) {
 			var models = [];
 			this.queryOptions.total = response.total_hits;
+			console.log(this.queryOptions.total);
 			_.each(response.hits, function (item) {
 
 				models.push({
@@ -17544,8 +17538,6 @@ var HealthApp = HealthApp || {};
 
 	});
 } ());
-
-
 var HealthApp = HealthApp || {};
 
 (function($){
@@ -17713,7 +17705,8 @@ var HealthApp = HealthApp || {};
 				this.collection = new HealthApp.FoodList({ name: name });
 				this.updateCollection({
 					paginationEnd: 8,
-					itemsPerPage: 8
+					itemsPerPage: 8,
+					paginationStart: 0
 				});
 			}
 		},
@@ -17722,9 +17715,11 @@ var HealthApp = HealthApp || {};
 			this.collection.queryOptions =_.extend(this.collection.queryOptions, config);
 			this.collection.fetch({
 				data: {
+					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd,
+					fields: "item_name,brand_name,item_id,brand_id,nf_calories",
+					order: 'desc',
 					appId: NUTRITIONIX_APP_ID,
 					appKey: NUTRITIONIX_APP_KEYS,
-					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd
 				},
 				success: this.addAll.bind(this)
 			});
@@ -17761,7 +17756,6 @@ var HealthApp = HealthApp || {};
 				paginationStart: $(e.currentTarget).data('start'),
 				paginationEnd: $(e.currentTarget).data('end')
 			};
-			console.log(config);
 			this.updateCollection(config);
 		},		
 

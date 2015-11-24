@@ -24,20 +24,14 @@ var HealthApp = HealthApp || {};
 		},
 
 		url: function () {
-			var queryUrl = NUTRITIONIX_URL + this.name +
-				"?fields=item_name,brand_name,item_id,brand_id,nf_calories" + 
-				"?order=desc";
-			return queryUrl;
+			return NUTRITIONIX_URL + this.name;
 		},
-
-		/*parse: function (response) {
-			this.trigger("collection:updated", { count: response.count, total: response.total, startAt: response.startAt });
-			return response.records;
-		},*/
+		
 
 		parse: function (response) {
 			var models = [];
 			this.queryOptions.total = response.total_hits;
+			console.log(this.queryOptions.total);
 			_.each(response.hits, function (item) {
 
 				models.push({
@@ -74,4 +68,3 @@ var HealthApp = HealthApp || {};
 
 	});
 } ());
-
