@@ -18,6 +18,7 @@ var HealthApp = HealthApp || {};
 			this.$addItem = self.$("#add-item"); /*TODO: review if it works*/
 			this.$content = $('#content'); /*TODO: review if it works*/
 			this.listenTo(this.collection, 'sync', this.render);
+			this.listenTo(this.collection, 'add', this.renderFoodItem);
 		},
 
 		render: function () {

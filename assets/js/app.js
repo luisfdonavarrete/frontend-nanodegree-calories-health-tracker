@@ -17496,12 +17496,10 @@ var HealthApp = HealthApp || {};
 		url: function () {
 			return NUTRITIONIX_URL + this.name;
 		},
-		
 
 		parse: function (response) {
 			var models = [];
-			this.queryOptions.total = response.total_hits;
-			console.log(this.queryOptions.total);
+			this.queryOptions.total = (response.total_hits > 10000) ? 10000 : response.total_hits;
 			_.each(response.hits, function (item) {
 
 				models.push({
@@ -17591,6 +17589,7 @@ var HealthApp = HealthApp || {};
 			this.$addItem = self.$("#add-item"); /*TODO: review if it works*/
 			this.$content = $('#content'); /*TODO: review if it works*/
 			this.listenTo(this.collection, 'sync', this.render);
+			this.listenTo(this.collection, 'add', this.renderFoodItem);
 		},
 
 		render: function () {
@@ -17717,7 +17716,7 @@ var HealthApp = HealthApp || {};
 				data: {
 					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd,
 					fields: "item_name,brand_name,item_id,brand_id,nf_calories",
-					order: 'desc',
+					order: 'asc',
 					appId: NUTRITIONIX_APP_ID,
 					appKey: NUTRITIONIX_APP_KEYS,
 				},

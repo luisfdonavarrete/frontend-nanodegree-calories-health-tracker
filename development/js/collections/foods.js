@@ -26,12 +26,10 @@ var HealthApp = HealthApp || {};
 		url: function () {
 			return NUTRITIONIX_URL + this.name;
 		},
-		
 
 		parse: function (response) {
 			var models = [];
-			this.queryOptions.total = response.total_hits;
-			console.log(this.queryOptions.total);
+			this.queryOptions.total = (response.total_hits > 10000) ? 10000 : response.total_hits;
 			_.each(response.hits, function (item) {
 
 				models.push({
