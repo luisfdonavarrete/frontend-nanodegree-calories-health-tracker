@@ -37,10 +37,10 @@ var HealthApp = HealthApp || {};
 		},
 
 		updateCollection: function (config) {
-			this.collection.queryOptions =_.extend(this.collection.queryOptions, config);
+			this.collection.paginationOptions = _.extend(this.collection.paginationOptions, config);
 			this.collection.fetch({
 				data: {
-					results: this.collection.queryOptions.paginationStart + ":" + this.collection.queryOptions.paginationEnd,
+					results: this.collection.paginationOptions.paginationStart + ":" + this.collection.paginationOptions.paginationEnd,
 					fields: "item_name,brand_name,item_id,brand_id,nf_calories",
 					order: 'asc',
 					appId: NUTRITIONIX_APP_ID,
@@ -75,20 +75,23 @@ var HealthApp = HealthApp || {};
 			var foodView = new HealthApp.FoodItemView({ model: item });
 			$list.append(foodView.render().el);
 		},
-		
+
 		paginationClick: function (e) {
-			var config = {
-				paginationStart: $(e.currentTarget).data('start'),
-				paginationEnd: $(e.currentTarget).data('end')
-			};
-			this.updateCollection(config);
-		},		
+			var $target = $(e.currentTarget);
+			if (!$target.parent().hasClass('active') && !$target.parent().hasClass('disabled')){
+				var config = {
+					paginationStart: $target.data('start'),
+					paginationEnd: $target.data('end')
+				};
+				this.updateCollection(config);
+			}
+		},
 
 		renderPagination: function () {
 			var linkInfo = this.collection.paginationLinks();
 			var $pagination = this.$el.find('.pagination');
-			linkInfo.forEach(function (value, index) {				
-				$pagination.append('<li><a href="#" data-start="'+ value.start +'" data-end="' + value.end + '">' + value.num + '</a></li>');
+			linkInfo.forEach(function (value, index) {
+				$pagination.append('<li class="' + value.active + '"><a href="#" data-start="' + value.start + '" data-end="' + value.end + '">' + value.num + '</a></li>');
 			});
 		}
 	});
