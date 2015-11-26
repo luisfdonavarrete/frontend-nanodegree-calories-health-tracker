@@ -17488,7 +17488,7 @@ var HealthApp = HealthApp || {};
 			paginationStart: 0,
 			paginationEnd: 10,
 			itemsPerPage: 10,
-			maxPage: 10,
+			maxPages: 10,
 			gap: 10,
 			total: 0
 		},
@@ -17515,10 +17515,8 @@ var HealthApp = HealthApp || {};
 		paginationLinks: function () {
 			var activePage = Math.floor(this.paginationOptions.paginationStart / this.paginationOptions.itemsPerPage) + 1;
 			var numPages = Math.floor(this.paginationOptions.total / this.paginationOptions.itemsPerPage);
-			var start = 0;
-			var middle = Math.floor(this.paginationOptions.maxPage / 2);
-			var end = 0;
 			var pages = [];
+			
 			for (var index = 0; index < numPages; index++) {
 				pages.push({
 					'num': index + 1,
@@ -17527,36 +17525,26 @@ var HealthApp = HealthApp || {};
 					'active': ((index + 1) === activePage) ? 'active' : ''
 				});
 			}
-			if ((activePage + 1) >= middle) {
-				start = (activePage - middle) + 1;
-				middle = activePage + 1;
-			}
-			end = middle + this.paginationOptions.gap + Math.floor(this.paginationOptions.maxPage / 2);
-			if(end >= pages.length - 1){ 
-				end = pages.length - 1;
-			}
-			var head = pages.slice(start, middle);
-			var tail = pages.slice(middle + this.paginationOptions.gap, end);
-			var result = head.concat({
-				'num': '...',
-				'start': 0,
-				'end': 0,
-				'active' : 'disabled'
-			}).concat(tail);
+
+			var result = pages.slice(activePage - 1, activePage + this.paginationOptions.maxPages);
+
 			if (activePage > 1) {
 				result.unshift({
 					'num': '&laquo;',
 					'start': pages[activePage - 2].start,
 					'end': pages[activePage - 2].end,
-					'active' : ''					
+					'active': ''
 				});
 			}
-			result.push({
-				'num': '&raquo;',
-				'start': pages[activePage].start,
-				'end': pages[activePage].end,
-				'active' : ''
-			});
+			if (activePage < numPages) {
+				result.push({
+					'num': '&raquo;',
+					'start': pages[activePage].start,
+					'end': pages[activePage].end,
+					'active': ''
+				});
+			}
+
 			return result;
 		},
 
