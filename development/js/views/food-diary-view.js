@@ -22,7 +22,7 @@ var HealthApp = HealthApp || {};
 		},
 
 		render: function () {
-			var items = this.collection.today();
+			var items = this.collection.todayItems();
 			this.$content.html(this.$el.html(this.template()));
 			_.each(items, function (item) {
 				this.renderFoodItem(item);

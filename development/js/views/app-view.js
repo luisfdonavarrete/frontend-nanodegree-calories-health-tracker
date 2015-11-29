@@ -1,33 +1,26 @@
 var HealthApp = HealthApp || {};
 
-(function($){
-	
+(function ($) {
+
 	'use strict';
-	
+
 	HealthApp.AppView = Backbone.View.extend({
 
-	el: '#health-tracker-app',
-	
-	initialize: function(){
-		this.render();
-	},
-	
-	render: function(){
-		new HealthApp.FoodDiaryView({ collection: HealthApp.foodCollection });
-	}
-	
-	/* */
-	/*
-		myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function (snapshot) {
-			var initialValues = _.map(snapshot.val(), function (item, id) {
-				item.firebaseID = id;
-				return item;
-			});
-			self.collection = new HealthApp.Collections.FoodList(_.map(initialValues, function (item) {
-				return new HealthApp.Models.FoodModel(item);
+		template: _.template($('#total-template').html()),
+
+		el: '#health-tracker-app',
+
+		initialize: function () {
+			this.$total = this.$('.total');
+			this.render();
+		},
+
+		render: function () {
+			var collection = HealthApp.foodCollection;
+			this.$total.html(this.template({
+				'totalDailyCalories': collection.totalCaloriesToday()
 			}));
-			typeof callback === "function" && callback(self);
-		});*/
-	/**/
-});	
-}(jQuery));
+			new HealthApp.FoodDiaryView({ collection: collection });
+		}
+	});
+} (jQuery));

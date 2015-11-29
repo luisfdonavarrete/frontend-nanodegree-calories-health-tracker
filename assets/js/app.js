@@ -17455,12 +17455,20 @@ var HealthApp =  HealthApp || {};
 		},
 		autoSync: true,
 		
-		today: function () {
+		todayItems: function () {
 			var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
 			var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
 			return this.filter(function(item){
 				return item.attributes.date >= startTime && item.attributes.date <= endTime;
 			});			
+		},
+		
+		totalCaloriesToday: function () {
+			var foodItems = this.todayItems();
+			var caloriesTotal = _.reduce(foodItems, function (memo, value, index, list) {				
+				return memo + parseFloat(value.attributes.nf_calories);
+			}, 0, this);
+			return caloriesTotal.toFixed(2);
 		}
 		
 	});
@@ -17552,37 +17560,30 @@ var HealthApp = HealthApp || {};
 } ());
 var HealthApp = HealthApp || {};
 
-(function($){
-	
+(function ($) {
+
 	'use strict';
-	
+
 	HealthApp.AppView = Backbone.View.extend({
 
-	el: '#health-tracker-app',
-	
-	initialize: function(){
-		this.render();
-	},
-	
-	render: function(){
-		new HealthApp.FoodDiaryView({ collection: HealthApp.foodCollection });
-	}
-	
-	/* */
-	/*
-		myFirebaseRef.orderByChild("date").startAt(startTime).endAt(endTime).once("value", function (snapshot) {
-			var initialValues = _.map(snapshot.val(), function (item, id) {
-				item.firebaseID = id;
-				return item;
-			});
-			self.collection = new HealthApp.Collections.FoodList(_.map(initialValues, function (item) {
-				return new HealthApp.Models.FoodModel(item);
+		template: _.template($('#total-template').html()),
+
+		el: '#health-tracker-app',
+
+		initialize: function () {
+			this.$total = this.$('.total');
+			this.render();
+		},
+
+		render: function () {
+			var collection = HealthApp.foodCollection;
+			this.$total.html(this.template({
+				'totalDailyCalories': collection.totalCaloriesToday()
 			}));
-			typeof callback === "function" && callback(self);
-		});*/
-	/**/
-});	
-}(jQuery));
+			new HealthApp.FoodDiaryView({ collection: collection });
+		}
+	});
+} (jQuery));
 var HealthApp = HealthApp || {};
 
 (function () {
@@ -17607,7 +17608,7 @@ var HealthApp = HealthApp || {};
 		},
 
 		render: function () {
-			var items = this.collection.today();
+			var items = this.collection.todayItems();
 			this.$content.html(this.$el.html(this.template()));
 			_.each(items, function (item) {
 				this.renderFoodItem(item);
