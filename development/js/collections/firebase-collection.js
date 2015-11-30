@@ -5,10 +5,13 @@ var HealthApp =  HealthApp || {};
 	'use strict';
 	
 	var firebaseFoodList = Backbone.Firebase.Collection.extend({
+		
 		model: HealthApp.FoodModel,
+		
 		url: function(){
 			return new Firebase('https://blistering-inferno-4995.firebaseio.com/');
 		},
+		
 		autoSync: true,
 		
 		todayItems: function () {
