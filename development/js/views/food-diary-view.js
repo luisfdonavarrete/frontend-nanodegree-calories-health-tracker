@@ -24,8 +24,9 @@ var HealthApp = HealthApp || {};
 			this.$el.find('.total').html("(" + this.collection.totalCaloriesToday() + ")");
 		},
 
-		render: function () {
+		render: function () {	
 			this.$content.html(this.$el.html(this.template()));
+			(this.collection.length >= 0) && this.addAll();
 			return this;
 		},
 		
