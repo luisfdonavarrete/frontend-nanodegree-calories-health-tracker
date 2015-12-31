@@ -15,13 +15,15 @@ var HealthApp = HealthApp || {};
 		clickHandler: function (e) {
 			var $target = $(e.target);
 			var $siblings = $target.parent().siblings();
-			$siblings.removeClass('active');
-			$target.parent().addClass('active');
+			this.toggleTabs($target.parent(), $siblings, 'active');
+			$target = $($target.attr('href'));
+			$siblings = $target.siblings();
+			this.toggleTabs($target, $siblings, 'active in');
 		},
-
-		render: function () {
-			var view = new HealthApp.FoodDiaryView({ collection: HealthApp.foodCollection });
-			view.render();
-		}
+		
+		toggleTabs: function ($active, $other, classes) {
+			$other.removeClass(classes);
+			$active.addClass(classes);
+		}		
 	});
 } (jQuery));

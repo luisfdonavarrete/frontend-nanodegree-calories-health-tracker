@@ -1,25 +1,31 @@
 var HealthApp = HealthApp || {};
 
 (function () {
-	HealthApp.Router = Backbone.Router.extend({
+	var Router = Backbone.Router.extend({
 		
-		initialize: function(){
-			this.homeView = new HealthApp.AppView();
-			this.historyView = new HealthApp.HistoryFoodView(); 
+		
+		initialize: function(){	
+			this.appView = new HealthApp.AppView();
+			this.foodDiaryView = new HealthApp.FoodDiaryView({ collection: HealthApp.foodCollection });
+			this.foodDiaryView.render();
+			this.foodDiaryView.delegateEvents(); 
+			this.historyView = new HealthApp.HistoryFoodView({ collection: HealthApp.foodCollection });
 		},
 
 		routes: {
-			"home": "home",
+			"my-food-diary": "myFoodDiary",
 			"history": "history",
-			"*path": "home"
+			"*path": "myFoodDiary"
 		},
 
-		home: function () {
-			this.homeView.render();
+		myFoodDiary: function () {
+
 		},
 
 		history: function () {
-			$('#content').html(this.historyView.render().$el.html());
+			//this.historyView.render();
 		}
 	});
+	
+	HealthApp.Router = new Router();
 } ());

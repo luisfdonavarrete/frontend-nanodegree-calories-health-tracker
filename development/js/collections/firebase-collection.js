@@ -1,37 +1,38 @@
-var HealthApp =  HealthApp || {};
+var HealthApp = HealthApp || {};
 
 (function () {
-	
+
 	'use strict';
-	
-	var firebaseFoodList = Backbone.Firebase.Collection.extend({
+
+	var FirebaseFoodList = Backbone.Firebase.Collection.extend({
 		
+		initialize: function () {
+			this.dateFormat = d3.time.format("%Y-%m-%d");
+			this.todayDate = this.dateFormat(new Date());	
+		},		
+
 		model: HealthApp.FoodModel,
-		
-		url: function(){
+
+		url: function () {
 			return new Firebase('https://blistering-inferno-4995.firebaseio.com/');
 		},
-		
-		autoSync: true,
-		
+
 		todayItems: function () {
-			var startTime = moment(new Date(moment().format("YYYY/MM/DD") + " 00:00:00").getTime()).unix();
-			var endTime = moment(new Date(moment().format("YYYY/MM/DD") + " 23:59:59").getTime()).unix();
 			return this.filter(function(item){
-				return item.attributes.date >= startTime && item.attributes.date <= endTime;
-			});			
+				return this.dateFormat(item.attributes.date) === this.todayDate;
+			}, this);
 		},
-		
+
 		totalCaloriesToday: function () {
 			var foodItems = this.todayItems();
-			var caloriesTotal = _.reduce(foodItems, function (memo, value, index, list) {				
+			var caloriesTotal = _.reduce(foodItems, function (memo, value, index, list) {
 				return memo + parseFloat(value.attributes.nf_calories);
 			}, 0, this);
 			return caloriesTotal.toFixed(2);
 		}
-		
+
 	});
-	
-	HealthApp.foodCollection = new firebaseFoodList();
-	
-}());
+
+	HealthApp.foodCollection = new FirebaseFoodList();
+
+} ());

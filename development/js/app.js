@@ -29,9 +29,7 @@ $.fn.serializeForm = function () {
 
 // Create a function to kick off our BackboneFire app
 function init() {
-	// The data we are syncing from our remote Firebase database
-	new HealthApp.Router();
-	Backbone.history.start();
+	Backbone.history.start();	
 }
 // When the document is ready, call the init function
 $(function () {

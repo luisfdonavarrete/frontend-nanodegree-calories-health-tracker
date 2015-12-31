@@ -13,6 +13,7 @@ var HealthApp = HealthApp || {};
 
 		initialize: function () {
 			this.listenTo(this.model, 'destroy', this.remove);
+			this.listenTo(this.model, 'change', this.render);
 		},
 
 		template: _.template($("#meal-item-template").html()),

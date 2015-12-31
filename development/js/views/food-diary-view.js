@@ -6,7 +6,7 @@ var HealthApp = HealthApp || {};
 
 	HealthApp.FoodDiaryView = Backbone.View.extend({
 
-		template: _.template($("#home-template").html()),
+		template: _.template($("#food-diary-template").html()),
 
 		events: {
 			"click #add-item": "loadFood"
@@ -14,23 +14,25 @@ var HealthApp = HealthApp || {};
 
 		initialize: function () {
 			this.modal = undefined;
-			this.$content = $('#content');
-			this.listenTo(this.collection, 'sync', this.addAll);
-			this.listenTo(this.collection, 'add', this.addOne);
-			this.listenTo(this.collection, 'remove', this.updateCalories);
+			this.$content = $('#my-food-diary');
+			this.listenToOnce(this.collection, 'sync', this.addAll);
+			//this.listenTo(this.collection, 'add', this.addOne);
+			//this.listenTo(this.collection, 'update', this.addAll);
+			/*this.listenTo(this.collection, 'update', function () {
+				console.log('UPDATE');
+			});*/
 		},
-		
+
 		updateCalories: function (item) {
 			this.$el.find('.total').html("(" + this.collection.totalCaloriesToday() + ")");
 		},
 
-		render: function () {	
+		render: function () {
 			this.$content.html(this.$el.html(this.template()));
-			(this.collection.length >= 0) && this.addAll();
 			return this;
 		},
-		
-		addAll: function () {
+
+		addAll: function (response) {
 			this.$el.find("#selected-food-items").html('');
 			var items = this.collection.todayItems();
 			_.each(items, function (item) {
@@ -43,7 +45,7 @@ var HealthApp = HealthApp || {};
 				model: item
 			});
 			this.updateCalories();
-			this.$el.find('#selected-food-items').append(foodItem.render().el);			
+			this.$el.find('#selected-food-items').append(foodItem.render().el);
 		},
 
 		loadFood: function (e) {
@@ -60,7 +62,7 @@ var HealthApp = HealthApp || {};
 				this.toggleAddItem();
 			}, this);
 		},
-		
+
 		toggleAddItem: function () {
 			this.$el.find('#add-item').toggleClass('active');
 		},
