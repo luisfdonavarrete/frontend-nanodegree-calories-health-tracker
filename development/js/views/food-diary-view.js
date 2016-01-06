@@ -32,7 +32,7 @@ var HealthApp = HealthApp || {};
 			return this;
 		},
 
-		addAll: function (response) {
+		addAll: function () {			
 			this.$el.find("#selected-food-items").html('');
 			var items = this.collection.todayItems();
 			_.each(items, function (item) {
@@ -44,7 +44,7 @@ var HealthApp = HealthApp || {};
 			var foodItem = new HealthApp.FoodItemView({
 				model: item
 			});
-			this.updateCalories();
+			//this.updateCalories();
 			this.$el.find('#selected-food-items').append(foodItem.render().el);
 		},
 

@@ -5,6 +5,11 @@ var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
 
 var HealthApp = HealthApp || {};
 
+function toggleTabs($active, $other, classes) {
+	$other.removeClass(classes);
+	$active.addClass(classes);
+}
+
 $.fn.serializeForm = function () {
 	var o = {};
 	var a = this.serializeArray();
@@ -27,11 +32,8 @@ $.fn.serializeForm = function () {
 	return o;
 };
 
-// Create a function to kick off our BackboneFire app
-function init() {
-	Backbone.history.start();	
-}
-// When the document is ready, call the init function
+// When the document is ready, call this function
 $(function () {
-	init();
+	new HealthApp.Router();
+	Backbone.history.start();
 });

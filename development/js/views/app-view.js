@@ -15,15 +15,7 @@ var HealthApp = HealthApp || {};
 		clickHandler: function (e) {
 			var $target = $(e.target);
 			var $siblings = $target.parent().siblings();
-			this.toggleTabs($target.parent(), $siblings, 'active');
-			$target = $($target.attr('href'));
-			$siblings = $target.siblings();
-			this.toggleTabs($target, $siblings, 'active in');
-		},
-		
-		toggleTabs: function ($active, $other, classes) {
-			$other.removeClass(classes);
-			$active.addClass(classes);
+			toggleTabs($target.parent(), $siblings, 'active');
 		}		
 	});
 } (jQuery));

@@ -18,6 +18,7 @@ var HealthApp = HealthApp || {};
 		},
 
 		todayItems: function () {
+			console.log("AQUI");
 			return this.filter(function(item){
 				return this.dateFormat(item.attributes.date) === this.todayDate;
 			}, this);

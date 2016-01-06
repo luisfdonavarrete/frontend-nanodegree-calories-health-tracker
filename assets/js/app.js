@@ -23746,6 +23746,11 @@ var NUTRITIONIX_URL = "https://api.nutritionix.com/v1_1/search/",
 
 var HealthApp = HealthApp || {};
 
+function toggleTabs($active, $other, classes) {
+	$other.removeClass(classes);
+	$active.addClass(classes);
+}
+
 $.fn.serializeForm = function () {
 	var o = {};
 	var a = this.serializeArray();
@@ -23768,13 +23773,10 @@ $.fn.serializeForm = function () {
 	return o;
 };
 
-// Create a function to kick off our BackboneFire app
-function init() {
-	Backbone.history.start();	
-}
-// When the document is ready, call the init function
+// When the document is ready, call this function
 $(function () {
-	init();
+	new HealthApp.Router();
+	Backbone.history.start();
 });
 var HealthApp = HealthApp || {};
 
@@ -23816,6 +23818,7 @@ var HealthApp = HealthApp || {};
 		},
 
 		todayItems: function () {
+			console.log("AQUI");
 			return this.filter(function(item){
 				return this.dateFormat(item.attributes.date) === this.todayDate;
 			}, this);
@@ -23933,15 +23936,7 @@ var HealthApp = HealthApp || {};
 		clickHandler: function (e) {
 			var $target = $(e.target);
 			var $siblings = $target.parent().siblings();
-			this.toggleTabs($target.parent(), $siblings, 'active');
-			$target = $($target.attr('href'));
-			$siblings = $target.siblings();
-			this.toggleTabs($target, $siblings, 'active in');
-		},
-		
-		toggleTabs: function ($active, $other, classes) {
-			$other.removeClass(classes);
-			$active.addClass(classes);
+			toggleTabs($target.parent(), $siblings, 'active');
 		}		
 	});
 } (jQuery));
@@ -23979,7 +23974,7 @@ var HealthApp = HealthApp || {};
 			return this;
 		},
 
-		addAll: function (response) {
+		addAll: function () {			
 			this.$el.find("#selected-food-items").html('');
 			var items = this.collection.todayItems();
 			_.each(items, function (item) {
@@ -23991,7 +23986,7 @@ var HealthApp = HealthApp || {};
 			var foodItem = new HealthApp.FoodItemView({
 				model: item
 			});
-			this.updateCalories();
+			//this.updateCalories();
 			this.$el.find('#selected-food-items').append(foodItem.render().el);
 		},
 
@@ -24252,15 +24247,19 @@ var HealthApp = HealthApp || {};
 } (jQuery));
 var HealthApp = HealthApp || {};
 
+/*$target = $($target.attr('href'));
+$siblings = $target.siblings();
+this.toggleTabs($target, $siblings, 'active in');*/
+
 (function () {
-	var Router = Backbone.Router.extend({
-		
-		
-		initialize: function(){	
+	HealthApp.Router = Backbone.Router.extend({
+
+
+		initialize: function () {
 			this.appView = new HealthApp.AppView();
 			this.foodDiaryView = new HealthApp.FoodDiaryView({ collection: HealthApp.foodCollection });
 			this.foodDiaryView.render();
-			this.foodDiaryView.delegateEvents(); 
+			this.foodDiaryView.delegateEvents();
 			this.historyView = new HealthApp.HistoryFoodView({ collection: HealthApp.foodCollection });
 		},
 
@@ -24271,13 +24270,15 @@ var HealthApp = HealthApp || {};
 		},
 
 		myFoodDiary: function () {
-
+			var $target = this.appView.$el.find('#my-food-diary');
+			var $siblings = $target.siblings();
+			toggleTabs($target, $siblings, 'in active');			
 		},
 
 		history: function () {
-			//this.historyView.render();
+			var $target = this.appView.$el.find('#history');
+			var $siblings = $target.siblings();
+			toggleTabs($target, $siblings, 'in active');
 		}
 	});
-	
-	HealthApp.Router = new Router();
 } ());
