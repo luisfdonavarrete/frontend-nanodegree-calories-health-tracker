@@ -12,7 +12,7 @@ var HealthApp = HealthApp || {};
 			item_id: '',
 			item_name: '',
 			nf_calories: '',
-			date: new Date(),
+			date: (new Date()).toString(),
 			form: false
 		}
 	});

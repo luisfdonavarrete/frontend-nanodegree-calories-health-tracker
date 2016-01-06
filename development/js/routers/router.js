@@ -1,12 +1,7 @@
 var HealthApp = HealthApp || {};
 
-/*$target = $($target.attr('href'));
-$siblings = $target.siblings();
-this.toggleTabs($target, $siblings, 'active in');*/
-
 (function () {
 	HealthApp.Router = Backbone.Router.extend({
-
 
 		initialize: function () {
 			this.appView = new HealthApp.AppView();

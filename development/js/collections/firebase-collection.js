@@ -18,9 +18,10 @@ var HealthApp = HealthApp || {};
 		},
 
 		todayItems: function () {
-			console.log("AQUI");
+			var aux;
 			return this.filter(function(item){
-				return this.dateFormat(item.attributes.date) === this.todayDate;
+				aux = new Date(item.attributes.date);
+				return this.dateFormat(aux) === this.todayDate;
 			}, this);
 		},
 

@@ -23792,7 +23792,7 @@ var HealthApp = HealthApp || {};
 			item_id: '',
 			item_name: '',
 			nf_calories: '',
-			date: new Date(),
+			date: (new Date()).toString(),
 			form: false
 		}
 	});
@@ -23818,9 +23818,10 @@ var HealthApp = HealthApp || {};
 		},
 
 		todayItems: function () {
-			console.log("AQUI");
+			var aux;
 			return this.filter(function(item){
-				return this.dateFormat(item.attributes.date) === this.todayDate;
+				aux = new Date(item.attributes.date);
+				return this.dateFormat(aux) === this.todayDate;
 			}, this);
 		},
 
@@ -23958,11 +23959,8 @@ var HealthApp = HealthApp || {};
 			this.modal = undefined;
 			this.$content = $('#my-food-diary');
 			this.listenToOnce(this.collection, 'sync', this.addAll);
-			//this.listenTo(this.collection, 'add', this.addOne);
-			//this.listenTo(this.collection, 'update', this.addAll);
-			/*this.listenTo(this.collection, 'update', function () {
-				console.log('UPDATE');
-			});*/
+			this.listenTo(this.collection, 'add', this.addOne);
+			this.listenTo(this.collection, 'remove', this.updateCalories);
 		},
 
 		updateCalories: function (item) {
@@ -23986,7 +23984,7 @@ var HealthApp = HealthApp || {};
 			var foodItem = new HealthApp.FoodItemView({
 				model: item
 			});
-			//this.updateCalories();
+			this.updateCalories();
 			this.$el.find('#selected-food-items').append(foodItem.render().el);
 		},
 
@@ -24070,7 +24068,11 @@ var HealthApp = HealthApp || {};
 		},
 
 		render: function (dataset) {
+			
 			var self = this;
+			var line = d3.svg.line()
+				.x(function (d) { return self.xScaleTime(new Date(d.date)); })
+				.y(function (d) { return self.yScale(d.value); }); 
 			this.d3.attr("width", this.WIDTH)
 				.attr("height", this.HEIGHT);
 			this.d3.selectAll("circle")
@@ -24085,7 +24087,16 @@ var HealthApp = HealthApp || {};
 				})
 				.attr("r", function (d) {
 					return self.rScale(d.value);
+				})
+				.attr("fill", "#5BC0DE")
+				.attr("stroke", "#204D74")
+				.attr("stroke-width", function (d) {
+					return self.rScale(d.value);
 				});
+			this.d3.append("path")
+				.datum(dataset)
+				.attr("class", "line")
+				.attr("d", line);
 			this.d3.append("g")
 				.attr("class", "axis")
 				.attr("transform", "translate(0," + (this.HEIGHT - this.PADDING) + ")")
@@ -24131,7 +24142,9 @@ var HealthApp = HealthApp || {};
 				.domain(d3.extent(dataset, function (d) {
 					return new Date(d.date);
 				}))
-				.rangeRound([this.PADDING, this.WIDTH - this.PADDING * 2]);
+				.rangeRound([this.PADDING, this.WIDTH - this.PADDING * 2])
+				.nice(d3.time.month);
+				
 			this.xAxis = d3.svg.axis()
 				.scale(this.xScaleTime)
 				.orient("bottom");
@@ -24140,6 +24153,10 @@ var HealthApp = HealthApp || {};
 				.scale(this.yScale)
 				.orient("left")
 				.ticks(5);
+			dataset.push({
+				'date': d3.time.format("%Y-%m-%d")(this.xScaleTime.domain()[0]),
+				'value' : 0});
+			dataset = _.sortBy(dataset, function(item){ return item.date; });
 			this.render(dataset);
 		},
 
@@ -24247,13 +24264,8 @@ var HealthApp = HealthApp || {};
 } (jQuery));
 var HealthApp = HealthApp || {};
 
-/*$target = $($target.attr('href'));
-$siblings = $target.siblings();
-this.toggleTabs($target, $siblings, 'active in');*/
-
 (function () {
 	HealthApp.Router = Backbone.Router.extend({
-
 
 		initialize: function () {
 			this.appView = new HealthApp.AppView();

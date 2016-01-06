@@ -16,11 +16,8 @@ var HealthApp = HealthApp || {};
 			this.modal = undefined;
 			this.$content = $('#my-food-diary');
 			this.listenToOnce(this.collection, 'sync', this.addAll);
-			//this.listenTo(this.collection, 'add', this.addOne);
-			//this.listenTo(this.collection, 'update', this.addAll);
-			/*this.listenTo(this.collection, 'update', function () {
-				console.log('UPDATE');
-			});*/
+			this.listenTo(this.collection, 'add', this.addOne);
+			this.listenTo(this.collection, 'remove', this.updateCalories);
 		},
 
 		updateCalories: function (item) {
@@ -44,7 +41,7 @@ var HealthApp = HealthApp || {};
 			var foodItem = new HealthApp.FoodItemView({
 				model: item
 			});
-			//this.updateCalories();
+			this.updateCalories();
 			this.$el.find('#selected-food-items').append(foodItem.render().el);
 		},
 

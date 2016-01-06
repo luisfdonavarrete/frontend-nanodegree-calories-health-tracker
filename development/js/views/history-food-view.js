@@ -17,7 +17,11 @@ var HealthApp = HealthApp || {};
 		},
 
 		render: function (dataset) {
+			
 			var self = this;
+			var line = d3.svg.line()
+				.x(function (d) { return self.xScaleTime(new Date(d.date)); })
+				.y(function (d) { return self.yScale(d.value); }); 
 			this.d3.attr("width", this.WIDTH)
 				.attr("height", this.HEIGHT);
 			this.d3.selectAll("circle")
@@ -32,7 +36,16 @@ var HealthApp = HealthApp || {};
 				})
 				.attr("r", function (d) {
 					return self.rScale(d.value);
+				})
+				.attr("fill", "#5BC0DE")
+				.attr("stroke", "#204D74")
+				.attr("stroke-width", function (d) {
+					return self.rScale(d.value);
 				});
+			this.d3.append("path")
+				.datum(dataset)
+				.attr("class", "line")
+				.attr("d", line);
 			this.d3.append("g")
 				.attr("class", "axis")
 				.attr("transform", "translate(0," + (this.HEIGHT - this.PADDING) + ")")
@@ -78,7 +91,9 @@ var HealthApp = HealthApp || {};
 				.domain(d3.extent(dataset, function (d) {
 					return new Date(d.date);
 				}))
-				.rangeRound([this.PADDING, this.WIDTH - this.PADDING * 2]);
+				.rangeRound([this.PADDING, this.WIDTH - this.PADDING * 2])
+				.nice(d3.time.month);
+				
 			this.xAxis = d3.svg.axis()
 				.scale(this.xScaleTime)
 				.orient("bottom");
@@ -87,6 +102,10 @@ var HealthApp = HealthApp || {};
 				.scale(this.yScale)
 				.orient("left")
 				.ticks(5);
+			dataset.push({
+				'date': d3.time.format("%Y-%m-%d")(this.xScaleTime.domain()[0]),
+				'value' : 0});
+			dataset = _.sortBy(dataset, function(item){ return item.date; });
 			this.render(dataset);
 		},
 

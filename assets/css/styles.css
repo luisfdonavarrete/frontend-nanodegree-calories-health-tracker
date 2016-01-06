@@ -7809,6 +7809,11 @@ button.close {
 .fa-fonticons:before {
   content: ""; }
 
+.line {
+  fill: none;
+  stroke: #204D74;
+  stroke-width: 1.5px; }
+
 .axis path,
 .axis line {
   fill: none;

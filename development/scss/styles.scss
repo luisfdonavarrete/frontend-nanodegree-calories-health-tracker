@@ -4,6 +4,12 @@ $icon-font-path: "../fonts/";
 @import "bootstrap";
 @import "font-awesome";
 
+.line {
+  fill: none;
+  stroke: #204D74;
+  stroke-width: 1.5px;
+}
+
 .axis path,
 .axis line {
 	fill: none;
