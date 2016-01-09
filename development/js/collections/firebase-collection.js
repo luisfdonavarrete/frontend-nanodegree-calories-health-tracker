@@ -31,6 +31,27 @@ var HealthApp = HealthApp || {};
 				return memo + parseFloat(value.attributes.nf_calories);
 			}, 0, this);
 			return caloriesTotal.toFixed(2);
+		},
+		
+		getItemGroupedByDay: function () {
+			var aux = [],
+				result = [];
+			
+			this.each(function (item) {
+				aux.push({
+					'date': this.dateFormat(new Date(item.get('date'))),
+					'value': item.get('nf_calories')
+				});
+			}, this);
+			aux = _.groupBy(aux, 'date');
+			var value = 0;
+			_.each(aux, function (item, i) {
+				value = _.reduce(item, function (memo, num) {
+					return memo + parseFloat(num.value);
+				}, 0);
+				result.push({ 'date': i, 'value': value });
+			});
+			return result;
 		}
 
 	});
